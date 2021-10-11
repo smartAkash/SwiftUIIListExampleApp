@@ -9,6 +9,10 @@ import Foundation
 import SwiftUI
 
 struct CustomSegmentedPickerView: View {
+//    
+//    enum EnumSegment {
+//        case simple(String) , simpleWithLeftSideicon(String, String?), simpleWithRightSideicon(String, String?)
+//    }
     
     enum EnumSegmentType: Int {
         case discover = 0, search, jobs
@@ -25,15 +29,17 @@ struct CustomSegmentedPickerView: View {
         }
     }
     
-    var buttonTitlesArray: [EnumSegmentType] = [EnumSegmentType]()
-    @State private var selectedIndexColor = Color.white
-    var tabHeight: CGFloat = 50
-    
+    var buttonTitlesArray: [EnumSegmentType] = [EnumSegmentType]() // array of title pass from out side
+    var tabHeight: CGFloat = 0 // segment hieght
+    internal var setSegmentContainerBgColor = Color.white // background color of main container
+    let buttonAction: (EnumSegmentType) -> Void
+
     var body: some View {
         VStack(alignment: .center, spacing: 0, content: {
-            configureCustomButtonSegment(buttonTitlesArray: buttonTitlesArray, frames: Array<CGRect>(repeating: .zero, count: buttonTitlesArray.count), tabHeight: tabHeight)
-                .padding(.all, 5)
-                .animation(.default, value: 1).background(selectedIndexColor)
+            configureCustomButtonSegment(buttonTitlesArray: buttonTitlesArray, frames: Array<CGRect>(repeating: .zero, count: buttonTitlesArray.count), tabHeight: tabHeight, buttonAction: { buttonSelectedEnum in
+                buttonAction(buttonSelectedEnum)
+            }).padding(.all, 5)
+              .animation(.default, value: 20).background(setSegmentContainerBgColor)
         }).cornerRadius(tabHeight/2).padding(.leading, 20).padding(.trailing, 20)
     }
 }
@@ -42,13 +48,11 @@ struct configureCustomButtonSegment: View {
     
     var buttonTitlesArray: [CustomSegmentedPickerView.EnumSegmentType] = [CustomSegmentedPickerView.EnumSegmentType]()
     @State private var selectedIndex = 0
-    @State var frames: [CGRect] = Array<CGRect>(repeating: .zero, count: 2)
-    @State private var selectedIndexColor = Color.white
-    @State private var selectedTextIndexColor = Color.white
+    @State var frames: [CGRect] = [CGRect]()
     @State private var selectedIndexBackgroundColor = Color.blue
-    var tabHeight: CGFloat = 50
-    @State private var toggle = true
-    
+    var tabHeight: CGFloat = 0 // segment hieght
+    var buttonAction: (CustomSegmentedPickerView.EnumSegmentType) -> Void
+
     var body: some View {
         ZStack{
             HStack(spacing: 0) {
@@ -57,6 +61,7 @@ struct configureCustomButtonSegment: View {
                     case .jobs,.discover:
                         Button(action: {
                             self.selectedIndex = index
+                            buttonAction(self.buttonTitlesArray[index])
                         }) {
                             Text(self.buttonTitlesArray[index].title).foregroundColor(self.selectedIndex   == index ? Color.white : Color.blue)
                         }
@@ -66,7 +71,10 @@ struct configureCustomButtonSegment: View {
                             }
                         )
                     case .search:
-                        Button(action: { self.selectedIndex = index }) {
+                        Button(action: {
+                            self.selectedIndex = index
+                            buttonAction(self.buttonTitlesArray[index])
+                        }) {
                             Image("searchAtLandingPage").colorMultiply(self.selectedIndex   == index ? Color.white : Color.blue).frame(width: 15, height: 15, alignment: .center)
                             Text(self.buttonTitlesArray[index].title).foregroundColor(self.selectedIndex   == index ? Color.white : Color.blue)
                         }
@@ -94,8 +102,3 @@ struct configureCustomButtonSegment: View {
     }
 }
 
-struct CustomSegmentedPickerView_Previews: PreviewProvider {
-    static var previews: some View {
-        CustomSegmentedPickerView()
-    }
-}
