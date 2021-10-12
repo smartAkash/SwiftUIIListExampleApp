@@ -13,6 +13,7 @@ struct CustomSegmentedPickerView: View {
     enum EnumSegmentType{
         case simple(title:String)  , simpleWithLeftSideIcon(title:String, icon:String? = nil), simpleWithRightSideIcon(title:String, icon:String? = nil)
     }
+    
     /*
      enum EnumSegmentType: Int {
      case discover = 0, search, jobs
