@@ -13,8 +13,8 @@ struct SwiftUIIListExampleAppApp: App {
         WindowGroup {
             ZStack{
                 Color.yellow
-                CustomSegmentedPickerView(buttonTitlesArray: [.jobs, .search, .discover],tabHeight: 50, buttonAction: { enumSegmentType in
-                    debugPrint(enumSegmentType.title)
+                CustomSegmentedPickerView(buttonTitlesArray: [.simple(title: "Jobs"), .simpleWithLeftSideIcon(title: "Search", icon: "searchAtLandingPage"), .simpleWithRightSideIcon(title: "Connect",icon: "umbagog")],tabHeight: 50, buttonTapAction: { enumSegmentType in
+                    debugPrint(enumSegmentType)
                 })
             }
 //            CustomSegmentView(selectedSegment: .discover, buttonTitlesArray: [.search,.jobs]) { selectionType in
