@@ -77,8 +77,8 @@ struct CustomGenericTextField: View {
         .padding(.top, 10)
         .padding(.bottom, 10)
         .padding(.trailing, 10)
-        .foregroundColor(textColor)
-        .textFieldStyle(.plain)
+//        .foregroundColor(textColor)
+//        .textFieldStyle(.plain)
         .keyboardType(.default)
     }
 }
