@@ -7,32 +7,22 @@
 
 import Foundation
 import SwiftUI
+import MapKit
+
+struct CommonDataModel{
+    enum EnumIconPosition:Int {
+        case left, right, none
+    }
+    var title:String
+    var icon:String? = nil
+    var iconPosition: EnumIconPosition = .none
+}
 
 struct CustomSegmentedPickerView: View {
     
-    enum EnumSegmentType{
-        case simple(title:String)  , simpleWithLeftSideIcon(title:String, icon:String? = nil), simpleWithRightSideIcon(title:String, icon:String? = nil)
-    }
-    
-    /*
-     enum EnumSegmentType: Int {
-     case discover = 0, search, jobs
-     
-     var title:String {
-     switch self {
-     case .discover:
-     return "Tab 1"
-     case .search:
-     return "tab 2"
-     case .jobs:
-     return "Tab 3"
-     }
-     }
-     }*/
-    
-    var buttonTitlesArray: [EnumSegmentType] = [EnumSegmentType]() // array of title pass from out side
+    var buttonTitlesArray: [CommonDataModel] = [CommonDataModel]() // array of title pass from out side
     var tabHeight: CGFloat = 0 // segment hieght
-    let buttonTapAction: (EnumSegmentType) -> Void
+    let buttonTapAction: (CommonDataModel) -> Void
     
     var body: some View {
         VStack(alignment: .center, spacing: 0, content: {
@@ -40,7 +30,6 @@ struct CustomSegmentedPickerView: View {
                 buttonTapAction(buttonSelectedEnum)
             }).padding(.all, 5).background(Color.white)
         }).cornerRadius(tabHeight/2).padding(.leading, 20).padding(.trailing, 20).animation(.easeInOut)
-        
     }
 }
 
@@ -48,48 +37,25 @@ struct CustomSegmentedPickerView: View {
 // Configure Segment of Button
 struct configureCustomButtonSegment: View {
     
-    var buttonTitlesArray: [CustomSegmentedPickerView.EnumSegmentType] = [CustomSegmentedPickerView.EnumSegmentType]()
+    var buttonTitlesArray: [CommonDataModel] = [CommonDataModel]()
     @State var selectedIndex = 0
     @State var frames: [CGRect] = [CGRect]()
     @State private var selectedIndexBackgroundColor = Color.blue
-    var buttonTapAction: (CustomSegmentedPickerView.EnumSegmentType) -> Void
+    var buttonTapAction: (CommonDataModel) -> Void
     
     var body: some View {
         ZStack{
             HStack(spacing: 0) {
                 ForEach(Array(self.buttonTitlesArray.enumerated()), id: \.offset) { offset, item in
                     let buttonIndex = offset
-                    switch item {
-                    case .simple(let title):
-                        CustomButtonSegment(buttonIndex: buttonIndex, title: title, isSelectedButton: self.selectedIndex   == buttonIndex, buttonAction: { (selectedIndex) in
-                            self.selectedIndex = selectedIndex
-                            self.buttonTapAction(self.buttonTitlesArray[selectedIndex])
-                        }).foregroundColor(selectedIndexBackgroundColor).padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 10)).background(
-                            GeometryReader { geo in
-                                Color.clear.onAppear { self.setFrame(index: buttonIndex, frame: geo.frame(in: .global)) }
-                            }
-                        )
-                        
-                    case .simpleWithRightSideIcon(let title, let icon):
-                        CustomButtonSegment(buttonIndex: buttonIndex, rightIcon: true, title: title, icon: icon, isSelectedButton: self.selectedIndex   == buttonIndex, buttonAction: { (selectedIndex) in
-                            self.selectedIndex = selectedIndex
-                            self.buttonTapAction(self.buttonTitlesArray[selectedIndex])
-                        }).foregroundColor(selectedIndexBackgroundColor).padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 10)).background(
-                            GeometryReader { geo in
-                                Color.clear.onAppear { self.setFrame(index: buttonIndex, frame: geo.frame(in: .global)) }
-                            }
-                        )
-                        
-                    case .simpleWithLeftSideIcon(let title, let icon):
-                        CustomButtonSegment(buttonIndex: buttonIndex, leftIcon: true, title: title, icon: icon, isSelectedButton: self.selectedIndex   == buttonIndex, buttonAction: { (selectedIndex) in
-                            self.selectedIndex = selectedIndex
-                            self.buttonTapAction(self.buttonTitlesArray[selectedIndex])
-                        }).foregroundColor(selectedIndexBackgroundColor).padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 10)).background(
-                            GeometryReader { geo in
-                                Color.clear.onAppear { self.setFrame(index: buttonIndex, frame: geo.frame(in: .global)) }
-                            }
-                        )
-                    }
+                    CustomButtonSegment1(buttonIndex: buttonIndex, selectedDataModel: item, isSelectedButton: self.selectedIndex   == buttonIndex) { (selectedIndex) in
+                        self.selectedIndex = selectedIndex
+                        self.buttonTapAction(self.buttonTitlesArray[selectedIndex])
+                    }.foregroundColor(selectedIndexBackgroundColor).padding(EdgeInsets(top: 10, leading: 15, bottom: 10, trailing: 10)).background(
+                        GeometryReader { geo in
+                            Color.clear.onAppear { self.setFrame(index: buttonIndex, frame: geo.frame(in: .global)) }
+                        }
+                    )
                 }
             }
         }.background(
@@ -104,6 +70,36 @@ struct configureCustomButtonSegment: View {
     
     private func setFrame(index: Int, frame: CGRect) {
         self.frames[index] = frame
+    }
+}
+
+struct CustomButtonSegment1: View {
+    
+    var buttonIndex = 0
+    var selectedDataModel: CommonDataModel
+    var isSelectedButton:Bool = false
+    var buttonAction: (Int) -> Void
+    private let iconSize:CGFloat = 15
+    
+    var body : some View {
+        Button(action: {
+            self.buttonAction(buttonIndex)
+        }){
+            switch selectedDataModel.iconPosition {
+            case .none:
+                Text(selectedDataModel.title).foregroundColor(isSelectedButton ? Color.white : Color.blue)
+            case .left:
+                if let iconName = selectedDataModel.icon, !iconName.isEmpty{
+                    Image(iconName).resizable().colorMultiply(isSelectedButton ? Color.white : Color.blue).frame(width: iconSize, height: iconSize, alignment: .center)
+                }
+                Text(selectedDataModel.title).foregroundColor(isSelectedButton ? Color.white : Color.blue)
+            case .right:
+                Text(selectedDataModel.title).foregroundColor(isSelectedButton ? Color.white : Color.blue)
+                if let iconName = selectedDataModel.icon, !iconName.isEmpty{
+                    Image(iconName).resizable().colorMultiply(isSelectedButton ? Color.white : Color.blue).frame(width: iconSize, height: iconSize, alignment: .center)
+                }
+            }
+        }
     }
 }
 
@@ -142,8 +138,12 @@ struct CustomSegmentedPickerView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack{
             Color.yellow
-            CustomSegmentedPickerView(buttonTitlesArray: [.simple(title: "Jobs"), .simpleWithLeftSideIcon(title: "Search", icon: "searchAtLandingPage"), .simpleWithRightSideIcon(title: "Connect",icon: "umbagog")],tabHeight: 50, buttonTapAction: { enumSegmentType in
-                debugPrint(enumSegmentType)
+            let arrayOfSegment = [CommonDataModel.init(title: "Jobs"),
+                                  CommonDataModel.init(title: "Search", icon: "searchAtLandingPage", iconPosition: .left),
+                                  CommonDataModel.init(title: "Connect", icon: "umbagog", iconPosition: .right)
+            ]
+            CustomSegmentedPickerView(buttonTitlesArray: arrayOfSegment,tabHeight: 50, buttonTapAction: { dataModel in
+                debugPrint(dataModel.title)
             })
         }
     }

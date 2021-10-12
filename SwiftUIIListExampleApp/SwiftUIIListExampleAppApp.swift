@@ -11,17 +11,13 @@ import SwiftUI
 struct SwiftUIIListExampleAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ZStack{
-                Color.yellow
-                CustomSegmentedPickerView(buttonTitlesArray: [.simple(title: "Jobs"), .simpleWithLeftSideIcon(title: "Search", icon: "searchAtLandingPage"), .simpleWithRightSideIcon(title: "Connect",icon: "umbagog")],tabHeight: 50, buttonTapAction: { enumSegmentType in
-                    debugPrint(enumSegmentType)
-                })
-            }
-//            CustomSegmentView(selectedSegment: .discover, buttonTitlesArray: [.search,.jobs]) { selectionType in
-//                debugPrint(selectionType.title)
-//            }
-//            ContentView().environment(\.colorScheme, .light)
-//            ContentView().environment(\.colorScheme, .dark)
+                let arrayOfSegment = [CommonDataModel.init(title: "Jobs"),
+                                      CommonDataModel.init(title: "Search", icon: "searchAtLandingPage", iconPosition: .left),
+                                      CommonDataModel.init(title: "Connect", icon: "umbagog", iconPosition: .right),
+                ]
+                CustomSegmentedPickerView(buttonTitlesArray: arrayOfSegment,tabHeight: 50, buttonTapAction: { dataModel in
+                    debugPrint(dataModel.title)
+                }).colorMultiply(.gray)
         }
     }
 
