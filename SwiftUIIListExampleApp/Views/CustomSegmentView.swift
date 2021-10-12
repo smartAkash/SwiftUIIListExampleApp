@@ -40,6 +40,7 @@ struct CustomSegmentedPickerView: View {
                 buttonTapAction(buttonSelectedEnum)
             }).padding(.all, 5).background(Color.white)
         }).cornerRadius(tabHeight/2).padding(.leading, 20).padding(.trailing, 20).animation(.easeInOut)
+        
     }
 }
 
