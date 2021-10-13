@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import MapKit
 
 struct CommonDataModel{
     enum EnumIconPosition:Int {

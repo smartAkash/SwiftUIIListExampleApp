@@ -17,7 +17,7 @@ struct SwiftUIIListExampleAppApp: App {
                 ]
                 CustomSegmentedPickerView(buttonTitlesArray: arrayOfSegment,tabHeight: 50, buttonTapAction: { dataModel in
                     debugPrint(dataModel.title)
-                }).colorMultiply(.gray)
+                }).colorMultiply(.orange)
         }
     }
 
