@@ -14,7 +14,6 @@ struct SwiftUIIListExampleAppApp: App {
                 let arrayOfSegment = [CommonDataModel.init(title: "Jobs"),
                                       CommonDataModel.init(title: "Search", icon: "searchAtLandingPage", iconPosition: .left, isSelected: true),
                                       CommonDataModel.init(title: "Connect", icon: "umbagog", iconPosition: .right),
-//                                      CommonDataModel.init(title: "Connect", icon: "umbagog", iconPosition: .right),
 
                 ]
                 CustomSegmentedPickerView(buttonTitlesArray: arrayOfSegment,tabHeight: 50, buttonTapAction: { dataModel in
